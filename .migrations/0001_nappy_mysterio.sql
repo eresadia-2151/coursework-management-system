@@ -1,0 +1,1 @@
+ALTER TABLE `school` RENAME COLUMN `nane` TO `name`;
