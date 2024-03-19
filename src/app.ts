@@ -3,9 +3,16 @@ import isAuthenticated from "./middleware/is-authenticated";
 import cookieParser from "cookie-parser"
 import routes from "./routes";
 import express from "express";
+import path from "path";
+import frontendRoutes from "./views";
 
 const app = express()
 const router = express.Router();
+
+//@ts-ignore
+app.use(express.static('public'));
+app.set('views', path.join(__dirname, '/views'));
+app.set("view engine", "ejs");
 
 //@ts-ignore
 app.use(cookieParser())
@@ -13,8 +20,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(isAuthenticated)
 
-app.get("/", (_, res) => res.send("fire"))
-
+router.use(frontendRoutes)
 router.use("/api/", routes)
 app.use(router)
 
