@@ -3,11 +3,19 @@ import { Controller } from "../../../types";
 import logger from "../../../utils/logger";
 import Program from "../models/program";
 
-const createProgram: Controller = async (req, res) => {
+const createProgram: any = async (req, res) => {
 
   const school = await db.query.School.findFirst({ columns: { code: true }, where: ({ code }, { eq }) => eq(code, req.body.schoolCode) })
 
   if (!school) return res.status(404).send({ status: "error", errors: ["That school was not found."] })
+
+  console.log({
+    schoolCode: req.body.schoolCode,
+    numberOfYears: Number(req.body.numberOfYears),
+    code: req.body.code,
+    createdAt: Date.now(),
+    name: req.body.name
+  })
 
   db.insert(Program).values({
     schoolCode: req.body.schoolCode,

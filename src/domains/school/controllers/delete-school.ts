@@ -4,7 +4,7 @@ import { Controller } from "../../../types";
 import School from "../models/school";
 import logger from "../../../utils/logger";
 
-const deleteSchool: Controller = async (req, res) => {
+const deleteSchool: any = async (req, res) => {
   if (!req.params.code.toString()) res.status(400).send({ status: "error", errors: ["School code is required"] })
 
   await db.delete(School).where(eq(School.code, req.params.code.toString()))

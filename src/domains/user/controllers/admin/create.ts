@@ -5,7 +5,7 @@ import { ulid } from "ulid"
 import bcrypt from "bcryptjs"
 import logger from "../../../../utils/logger";
 
-const createUserAdmin: Controller = async (req, res) => {
+const createUserAdmin: any = async (req, res) => {
 
   await db.insert(User).values({
     createdAt: Date.now(),

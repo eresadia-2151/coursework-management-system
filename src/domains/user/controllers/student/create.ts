@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs"
 import logger from "../../../../utils/logger";
 import UserStudentProfile from "../../models/user-student-profile";
 
-const createUserStudent: Controller = async (req, res) => {
+const createUserStudent: any = async (req, res) => {
 
   const program = await db.query.Program.findFirst({
     where: ({ code }, { eq }) => eq(code, req.body.programCode),

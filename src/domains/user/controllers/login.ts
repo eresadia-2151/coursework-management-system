@@ -6,7 +6,7 @@ import UserSession from "../models/user-session";
 import { SESSION_EXPIRES_IN } from "../../../consts";
 import logger from "../../../utils/logger";
 
-const loginUser: Controller = async (req, res) => {
+const loginUser: Controller<{token:string}> = async (req, res) => {
   const sessionId = ulid();
 
   const user = await db.query.User.findFirst({
@@ -15,9 +15,9 @@ const loginUser: Controller = async (req, res) => {
   });
 
   if (!user || !(await bcrypt.compare(req.body.password, user.passwordHash)))
-    return res.status(403).send({ status: "error", errors: ["Invalid credentials"] })
+    return ({ ok:false, errors: ["Invalid credentials"] })
 
-  await db.insert(UserSession).values({
+  return await db.insert(UserSession).values({
     createdAt: Date.now(),
     expiresAt: Date.now() + SESSION_EXPIRES_IN,
     id: sessionId,
@@ -26,11 +26,11 @@ const loginUser: Controller = async (req, res) => {
     ipAddress: req.ip ?? null,
   })
     .then(() => {
-      res.status(200).send({ status: "success", data: { token: sessionId } })
+      return { ok:true, data: { token: sessionId } } as const
     })
     .catch((e: any) => {
-      res.status(500).send({ status: "error", errors: ["An internal error has occured"] })
       logger("login_user_failed", e)
+      return({ ok:false, errors: ["An internal error has occured"] })
     })
 
 }

@@ -2,24 +2,16 @@ import db from "../../../config/db";
 import { Controller } from "../../../types";
 import logger from "../../../utils/logger";
 
-const getSchools: Controller = async (req, res) => {
-  await db.query.School.findMany({
-    with: {
-      programs: {
-        columns: {
-          code: true,
-          name: true
-        }
-      }
-    }
-  })
+const getSchools: Controller<{
+  schools: { code: string; name: string }[];
+}> = async (req, res) =>
+  await db.query.School.findMany({ columns: { code: true, name: true } })
     .then((schools) => {
-      res.status(200).send({ status: "success", data: { schools } })
+      return { ok: true, data: { schools } } as const;
     })
-    .catch((e: any) => {
-      res.status(500).send({ status: "error", errors: ["An internal error has occured"] })
-      logger("create_school_failed", e)
-    })
-}
+    .catch((e) => {
+      logger("create_school_failed", e);
+      return { ok: false, errors: ["An internal error has occured"] };
+    });
 
 export default getSchools;

@@ -5,6 +5,10 @@ import programRoutes from "../domains/program";
 import courseRoutes from "../domains/course";
 const routes = express.Router();
 
+routes.get("/dashboard", (req,res)=>{
+    res.redirect(`/user/${req.user.role}/dashboard`)
+})
+
 routes.use("/user", userRoutes)
 routes.use("/school", schoolRoutes)
 routes.use("/program", programRoutes)

@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser"
 import routes from "./routes";
 import express from "express";
 import path from "path";
-import frontendRoutes from "./views";
+import bodyParser from "body-parser"
 
 const app = express()
 const router = express.Router();
@@ -16,12 +16,12 @@ app.set("view engine", "ejs");
 
 //@ts-ignore
 app.use(cookieParser())
+app.use(bodyParser.urlencoded({extended:true}))
 //@ts-ignore
 app.use(express.json())
 app.use(isAuthenticated)
 
-router.use(frontendRoutes)
-router.use("/api/", routes)
+router.use("/", routes)
 app.use(router)
 
 app.use((err, req, res, next) => {

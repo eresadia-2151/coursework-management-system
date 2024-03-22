@@ -3,7 +3,7 @@ import { Controller } from "../../../types";
 import logger from "../../../utils/logger";
 import School from "../models/school";
 
-const createSchool: Controller = async (req, res) => {
+const createSchool: any = async (req, res) => {
   db.insert(School).values({
     code: req.body.code,
     name: req.body.name,

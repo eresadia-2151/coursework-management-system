@@ -11,8 +11,10 @@ const School = sqliteTable("school", {
 const schoolRelations = relations(School, ({ many }) => ({
   programs: many(Program)
 }))
+type TSchool = typeof School.$inferInsert
 
 export default School;
 export {
-  schoolRelations
+  schoolRelations,
+  type TSchool
 }

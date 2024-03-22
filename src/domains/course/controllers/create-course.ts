@@ -3,7 +3,7 @@ import { Controller } from "../../../types";
 import logger from "../../../utils/logger";
 import Course from "../models/course";
 
-const createCourse: Controller = async (req, res) => {
+const createCourse: any = async (req, res) => {
 
   const program = await db.query.Program.findFirst({
     where: ({ code }, { eq }) => eq(code, req.body.programCode),
