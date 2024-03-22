@@ -25,7 +25,7 @@ router.use("/", routes)
 app.use(router)
 
 app.use((err, req, res, next) => {
-  res.status(500).send({ status: "error", errors: ['Something went wrong.  Please try again'] });
+  res.status(500).send({ status: "error", errors: [err.message, 'Something went wrong.  Please try again'] });
   logger("internal_error", err)
 });
 
