@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
-    "cp:views": "copyfiles --up 1 src/views/pages/* dist",
+    "cp:views": "copyfiles --up 1 src/views/pages/** dist",
     "build": "pnpm install && tsc --skipLibCheck && pnpm cp:views",
     "start": "node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
