@@ -39,13 +39,12 @@ return res.render("pages/user/admin/dashboard-school", {
 
 userAdminRoutes.get("/dashboard/programs", async (req, res) => {
     const schools = await getSchools(req, res);
-    const selectedSchool = req.query["school"] ?? schools[0].code
+    const selectedSchool = req.query["school"] ?? schools[0]?.code ?? "SE"
 
     const programs = await db.query.Program.findMany({
         where:({schoolCode},{eq})=>eq(schoolCode,selectedSchool)
     })
 
-    console.log(programs)
 
     if (schools.ok === false)
         return res.render("pages/500")
@@ -59,4 +58,46 @@ userAdminRoutes.get("/dashboard/programs", async (req, res) => {
   });
   });
 
+
+  userAdminRoutes.get("/dashboard/course", async (req,res)=>{
+      const courses = await db.query.Course.findMany({
+        columns:{
+          code:true,
+          name:true,
+          programCode:true,
+          semester:true,
+          year:true
+        }
+      })
+      return res.render("pages/user/admin/dashboard-course",{
+        courses:courses
+      })
+  })
+
+userAdminRoutes.get("/dashboard/student",async (req,res)=>{
+  const schools = await getSchools(req, res);
+  if(schools.ok === false) return
+
+  const students = await db.query.UserStudentProfile.findMany({
+    columns:{
+      registrationNumber:true,
+      firstName:true,
+      lastName:true,
+      personalEmail:true,
+      programCode:true,
+    }
+  })
+
+  return res.render("pages/user/admin/dashboard-student",{
+    programs:await db.query.Program.findMany({
+      columns:{
+        code:true,
+        name:true
+      }
+    }),
+    schools: schools?.data.schools ?? [], 
+    students:students
+
+  })
+})  
 export default userAdminRoutes;

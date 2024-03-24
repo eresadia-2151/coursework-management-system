@@ -76,9 +76,9 @@
               ><a class="nav-link" href="projects.html"
                 ><i class="fas fa-table"></i
                 ><span>Lecturer Table&nbsp;</span></a
-              ><a class="nav-link" href="/user/admin/dashboard/course"
+              ><a class="nav-link" href="projects.html"
                 ><i class="fas fa-table"></i
-                ><span>&nbsp;Course&nbsp;</span></a
+                ><span>&nbsp;Course Table&nbsp;</span></a
               >
             </li>
             <li class="nav-item"></li>
@@ -383,93 +383,91 @@
           <div class="container-fluid" style="margin-bottom: 50px">
             <div class="row">
               <div class="col-12 col-sm-6 col-md-6">
-                <h3 class="text-white mb-4">Student Table</h3>
+                <h3 class="text-white mb-4">Course Table</h3>
               </div>
               <div
                 class="col-12 col-sm-6 col-md-6 text-end"
                 style="margin-bottom: 30px"
               >
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Add student
-            </button>
-              
-              <!-- Modal -->
-              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Add student</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <form action="/user/admin/dashboard/school/new" method="post">
-                        <script>
-                            function deleteSchool(code){
-                                fetch("/school/"+code, {
-                                    method:"delete",
-                                }).then(()=>location.reload())
-                            }
+         <button
+                            class="btn btn-primary"
+                            data-toggle="modal" data-target="#addprogmod"
+                            >
+                                add course
+                            </button>
+                            <div class="modal fade" id="addprogmod" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="exampleModalLabel">Add course</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <form action="/user/admin/dashboard/school/new" method="post">
+                                        <script>
+                                            function deleteProgram(code){
+                                                fetch("/program/"+code, {
+                                                    method:"delete",
+                                                }).then(()=>location.reload())
+                                            }
+        
+                                            function submitCourse(){
+                                                const errorDiv = document.getElementById("error");
+                                                const code = document.getElementById("course-code")?.value
+                                                const name = document.getElementById("course-name")?.value
+                                                const semester = Number(document.getElementById("semester")?.value)
+                                                
+                                                const year = Number(document.getElementById("year")?.value)
 
-                            function submitStudent(){
-                                const errorDiv = document.getElementById("error");
-                                const registrationNumber = document.getElementById("registration-number")?.value
-                                const firstName = document.getElementById("first-name")?.value
+                                                const programCode = document.getElementById("program-code")?.value
 
-                                const lastName = document.getElementById("last-name")?.value
-                                const personalEmail = document.getElementById("personal-email")?.value
-                                const programCode = document.getElementById("program-code")?.value
 
-     
+                                                const submitSchool = fetch("/course", {
+                                                    method:"post",
+                                                    headers: {
+                    "Content-Type": "application/json", 
+                },
+                                                    body:JSON.stringify({name, code, year, programCode, semester}),
+                                                    
+                                                }).then((res)=>res.json())
+                                                .then((body)=>{
+                                                    if(body.status === "error"){
+                                                        errorDiv.hidden = false
+                                                        errorDiv.innerText = body.errors[0]
+                                                        return
+                                                    }
+                                                        location.reload()
+                                                    })
+        
+                                            }
+                                        </script>
+                                    <div class="modal-body">
+                             
+                                            <div class="mb-3"><input required class="form-control" type="text" id="course-code" placeholder="Code"></div>
+                                            <div class="mb-3"><input required class="form-control" type="text" id="course-name" placeholder="Name"></div>
+                                            <div class="mb-3"><input required class="form-control" type="text" id="program-code" placeholder="Program Code"></div>
+                                            <div class="mb-3"><input required class="form-control" type="number" id="semester" placeholder="Semester"></div>
+                                            <div class="mb-3"><input required class="form-control" type="number" id="year" placeholder="Year"></div>
 
-                                const submitSchool = fetch("/user/student", {
-                                    method:"post",
-                                    headers: {
-    "Content-Type": "application/json", 
-},
-                                    body:JSON.stringify({registrationNumber, firstName,lastName,personalEmail,programCode, defaultPassword:"Hit@2022Intake"}),
-                                    
-                                }).then((res)=>res.json())
-                                .then((body)=>{
-                                    if(body.status === "error"){
-                                        errorDiv.hidden = false
-                                        errorDiv.innerText = body.errors[0]
-                                        return
-                                    }
-                                        location.reload()
-                                    })
 
-                            }
-                        </script>
-                    <div class="modal-body">
+                  
 
-                            <div class="mb-3"><input required class="form-control" type="text" id="registration-number" placeholder="registration Number"></div>
-                            <div class="mb-3"><input required class="form-control" type="text" id="first-name" placeholder="First name"></div>
-                            <div class="mb-3"><input required class="form-control" type="text" id="last-name" placeholder="Last name"></div>
-                            <div class="mb-3"><input required class="form-control" type="text" id="personal-email" placeholder="Personal email"></div>
-
-                            <div class="mb-3"><select required class="form-control" type="text" id="program-code" placeholder="Program Code">
-                                <% for(var i=0; i<programs.length; i++) {%>
-                                    <option value="<%= programs[i].code %>"><%= programs[i].code %> - <%= programs[i].name %></option>
-                                <% } %>                    
-                            </select>
-                       
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" 
-                                onclick="submitStudent()"
-                            class="btn btn-primary">Save changes</button>
-                        </div>
-                        <div style=" width: 100%; padding-inline:16px;">
-                            <div style="width: 100%" hidden id="error" class="alert alert-danger" role="alert">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="button" 
+                                                onclick="submitCourse()"
+                                            class="btn btn-primary">Save changes</button>
+                                        </div>
+                                        <div style=" width: 100%; padding-inline:16px;">
+                                            <div style="width: 100%" hidden id="error" class="alert alert-danger" role="alert">
+                                              </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                </div>
                               </div>
-                        </div>
-                    </div>
-                </form>
-                </div>
-              </div>
-
               </div>
             </div>
             <div
@@ -507,39 +505,47 @@
                             background: #21252f;
                           "
                         >
-                          <th class="text-center">ID</th>
+                          <th class="text-center">CODE</th>
                           <th class="text-center">
                             <strong>NAME</strong><br />
                           </th>
-                          <th class="text-center">Personal Email</th>
-                          <th class="text-center">Program</th>
+                          <th class="text-center">PROGRAM CODE</th>
+                          <th class="text-center">SEMESTER</th>
+                          <th class="text-center">YEAR</th>
                         </tr>
                       </thead>
                       <tbody class="text-center" style="border-top-width: 0px">
-                        <% for(var i=0; i<students.length; i++) {%>
+                        <% for(var i=0; i<courses.length; i++) {%>
+                            <tr style="background: #262a38">
+                              <td style="color: rgb(255, 255, 255)">
+                                <%= courses[i].code %>
+                            </td>
+                              <td style="color: rgb(255, 255, 255)">
+                                <%= courses[i].name %>
 
-                          <tr style="background: #262a38">
-                            <td style="color: rgb(255, 255, 255)">
-                              <%= students[i].registrationNumber %>
                             </td>
-                            <td style="color: rgb(255, 255, 255)">
-                              <%= students[i].firstName %>
-                              <%= students[i].lastName %>
-                            </td>
-                            <td style="color: rgb(255, 255, 255)">
-                              <%= students[i].personalEmail %>
-                            </td>
-                            <td
-                              class="text-center align-middle"
-                              style="max-height: 60px; height: 60px"
-                            >
-                            <%= students[i].programCode %>
-                            </td>
-                      
-                          </tr>
-                          <% } %>   
+                              <td style="color: rgb(255, 255, 255)">
+                                <%= courses[i].programCode %>
 
-                    
+                            </td>
+                              <td
+                                class="text-center align-middle"
+                                style="max-height: 60px; height: 60px"
+                              >
+                              <%= courses[i].semester %>
+
+                            </td>
+                              <td
+                                class="text-center align-middle"
+                                style="max-height: 60px; height: 60px"
+                              >
+                              <%= courses[i].year %>
+  
+                              
+                              </td>
+                            </tr>
+                        <% } %>   
+                       
                       </tbody>
                     </table>
                   </div>
@@ -566,6 +572,7 @@
         ><i class="fas fa-angle-up"></i
       ></a>
     </div>
+    
     <script src="/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.6.0/umd/popper.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -585,7 +592,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="/assets/js/script.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+       <!-- Add Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+<!-- Add Bootstrap JS (jQuery and Popper.js are required dependencies) -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
